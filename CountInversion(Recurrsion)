@@ -1,0 +1,51 @@
+#include<iostream>
+#include<vector>
+using namespace std;
+int mergeAndCount(vector<int> &arr,int st,int mid,int en){
+    vector<int> temp;
+    int i=st;
+    int j=mid+1;
+    int inversions = 0;
+    while(i<=mid && j<=en){
+        if(arr[i]<=arr[j]){
+            temp.push_back(arr[i]);
+            i++;
+        }
+        else{
+            temp.push_back(arr[j]);
+            j++;
+            inversions +=(mid-i+1);
+        } 
+    }
+    // Copy the remaining elements
+    while(i<=mid){
+        temp.push_back(arr[i]);
+        i++;
+    }
+    while(j<=en){
+        temp.push_back(arr[j]);
+        j++;
+    }
+    // Copy the merged elements back to the original array
+    for(int k=0;k<temp.size();k++){
+        arr[k+st] = temp[k];
+    }
+    return inversions; // Return the number of inversions
+}
+int CountInversions(vector<int> &arr, int st,int en){
+    if(st<en){
+        int mid=st+(en-st)/2;
+        int leftInversions = CountInversions(arr, st, mid);
+        int rightInversions = CountInversions(arr, mid+1, en);
+
+        int crossInversions = mergeAndCount(arr, st, mid, en);
+        return leftInversions + rightInversions + crossInversions;
+    }
+    return 0;
+}
+int main(){
+    vector<int> arr={6,3,5,2,7};
+    int inversions = CountInversions(arr, 0, arr.size()-1);
+    cout<<"Number of inversions: "<<inversions<<endl;
+    return 0;
+}
